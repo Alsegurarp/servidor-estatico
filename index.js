@@ -3,6 +3,7 @@ const fs = require("fs/promises");
 
 const servidor = express();
 
+servidor.use(express.static("./lista-colores"));
 
 servidor.use(express.json); // Interceptará cualquier contenido en JSON y lo procesará, en la peticion se agregará una condicion .body
 //interpreta el body de la peticion
@@ -13,7 +14,7 @@ servidor.post("/colores/nuevo", (peticion, respuesta) => {
     respuesta.send("... x cosa");
 } )
 
-servidor.use(express.static("./lista-colores"));
+
 servidor.use((peticion, respuesta) => {
 respuesta.status(404);
 respuesta.json({ Error : "Not found" });
