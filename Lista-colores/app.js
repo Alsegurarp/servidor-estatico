@@ -34,9 +34,23 @@ formulario.addEventListener("submit", (evento) => {
             }
 
             if(valido){
-                contenedorColores.appendChild(li(posibleValor[0],posibleValor[1],posibleValor[2]));
-                return input.value = ""; // ahora cada vez que se haga submit y se muestre el color en la pantalla, el espacio del input no contiene nada, así puede volver a ser llenado
-                //Con el return ahora dejará de leer el código en caso que ésta linea sea ejecutada y por ende no llegará al msgError
+                let [r,g,b] = posibleValor;
+
+                return fetch("/colores/nuevo", {
+                    method : "POST", //despues del method se debe mandar el cuerpo de lo que vamos a mandar - body
+                    body : JSON.stringify({ r,g,b })
+                })
+                    .then(respuesta => {
+                        respuesta.text() //se lee el contenido como un string - Despues se pasa
+                        .then(respuesta => { // Se recibe el contenido y ahora se imprime 
+                            console.log(respuesta)
+                        })
+                    });
+
+                //contenedorColores.appendChild(li(posibleValor[0],posibleValor[1],posibleValor[2]));
+                //return input.value = ""; 
+                    // ahora cada vez que se haga submit y se muestre el color en la pantalla, el espacio del input no contiene nada, así puede volver a ser llenado
+                    //Con el return ahora dejará de leer el código en caso que ésta linea sea ejecutada y por ende no llegará al msgError
             }
         } 
         msgError = "Tres valores entre 0 - 255 separados por comas";
