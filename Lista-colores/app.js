@@ -4,7 +4,7 @@ const input = document.querySelector('input[type="text"]')
 const parrafoError = document.querySelector(".error")
 
 
-function li(r,g,b){
+function li(id,r,g,b){
     let item = document.createElement("li");
     item.innerText = [r,g,b].join(",");
     item.style.backgroundColor = `rgb(${[r,g,b].join(",")})`;
@@ -14,6 +14,16 @@ function li(r,g,b){
 }//crear li, poner background color, ponerle el texto y retornar ,0,
 //Cada vez que yo la invoque, permite crear item con color
 //En cada function li  que invoquemos se encuentra un objeto, por lo que puede ser modificado si lo invocamos - ahora le daremos click y se eliminará.
+
+fetch("/colores")
+.then(respuesta => respuesta.json())
+.then(colores => {
+colores.forEach(({id,r,g,b}) => {
+    contenedorColores.appendChild(li(id,r,g,b));
+})
+});
+
+
 
 formulario.addEventListener("submit", (evento) => {
     evento.preventDefault();
@@ -38,24 +48,26 @@ formulario.addEventListener("submit", (evento) => {
 
                 return fetch("/colores/nuevo", {
                     method : "POST", //despues del method se debe mandar el cuerpo de lo que vamos a mandar - body
-                    body : JSON.stringify({ r,g,b })
+                    body : JSON.stringify({ r,g,b }), 
+                    headers : {
+                            "Content-type" : "application/json"
+                    }
                 })
-                    .then(respuesta => {
-                        respuesta.text() //se lee el contenido como un string - Despues se pasa
-                        .then(respuesta => { // Se recibe el contenido y ahora se imprime 
-                            console.log(respuesta)
-                        })
-                    });
-
-                //contenedorColores.appendChild(li(posibleValor[0],posibleValor[1],posibleValor[2]));
-                //return input.value = ""; 
+                    .then(respuesta =>  respuesta.text()) //se lee el contenido como un string - Despues se pasa
+                        .then(({id,error}) => { // Se recibe el contenido y ahora se imprime 
+                            if( !error ) {
+                                contenedorColores.appendChild(li(id, r,g,b));
+                                return input.value = ""; 
+                            }
+                        });
+                    };
                     // ahora cada vez que se haga submit y se muestre el color en la pantalla, el espacio del input no contiene nada, así puede volver a ser llenado
                     //Con el return ahora dejará de leer el código en caso que ésta linea sea ejecutada y por ende no llegará al msgError
             }
         } 
         msgError = "Tres valores entre 0 - 255 separados por comas";
-    }
+
     parrafoError.innerText = msgError;
     parrafoError.classList.add("visible");
-})
+});
 
