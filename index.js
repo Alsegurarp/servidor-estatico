@@ -54,6 +54,7 @@ respuesta.status(404);
 respuesta.json({ Error : "Not found" });
 }) // Toda peticion que llegue aqui es porque no encontró similitud, por ende NO HAY NINGUNA SIMILITUD A LA PETICION
 
-servidor.listen(3000)//Asignar el canal el cual será tomado 
+servidor.listen(process.env.PORT || 3000)
+//Asignar el canal el cual será tomado 
 //Para visitarlo es usando el "localhost/3000" en tu navegador.
 
